@@ -5,23 +5,42 @@ import (
 	"time"
 )
 
+// Repository is an interface for data operations
 type Repository interface {
-	FindAll() []*Todo
-	FindByID(id int) *Todo
-	Save(newTodo *Todo) *Todo
-	DeleteByID(id int) bool
+	findAll() []*ToDo
+	findByID(id int) *ToDo
+	save(newToDo *ToDo) *ToDo
+	deleteByID(id int) bool
 }
 
+// DefaultMapSize is the default size of the underlying map at initialization
+const DefaultMapSize = 15
+
+// String returns a string representation of a map repository
 func (r *MapRepository) String() string {
-	return fmt.Sprintf("%v", r.todos)
+	return fmt.Sprintf("MapRepository: %v", r.todos)
 }
 
 type MapRepository struct {
-	todos map[int]*Todo
+	todos map[int]*ToDo
 }
 
+// NewMapRepository initializes a new repository based on an internal map
+//
+// This is how you create a new map repository
+//
+//  var m *MapRepository = NewMapRepository()
+//
+// Input parameters
+//
+// -
+//
+// Return values
+//
+// - Pointer to newly initialized MapRepository
+//
 func NewMapRepository() *MapRepository {
-	return &MapRepository{todos: map[int]*Todo{
+	return &MapRepository{todos: map[int]*ToDo{
 		1: {
 			ID:          1,
 			Description: "Do some Go training",
@@ -31,9 +50,9 @@ func NewMapRepository() *MapRepository {
 	}}
 }
 
-func (r *MapRepository) FindAll() []*Todo {
+func (r *MapRepository) findAll() []*ToDo {
 
-	todosList := make([]*Todo, 0, len(r.todos))
+	todosList := make([]*ToDo, 0, len(r.todos))
 
 	for _, v := range r.todos {
 		todosList = append(todosList, v)
@@ -42,7 +61,7 @@ func (r *MapRepository) FindAll() []*Todo {
 	return todosList
 }
 
-func (r *MapRepository) FindByID(id int) *Todo {
+func (r *MapRepository) findByID(id int) *ToDo {
 
 	if elem, ok := r.todos[id]; ok {
 		return elem
@@ -51,16 +70,16 @@ func (r *MapRepository) FindByID(id int) *Todo {
 	return nil
 }
 
-func (r *MapRepository) Save(newTodo *Todo) *Todo {
+func (r *MapRepository) save(newToDo *ToDo) *ToDo {
 
 	newID := len(r.todos) + 1
-	newTodo.ID = newID
-	r.todos[newID] = newTodo
+	newToDo.ID = newID
+	r.todos[newID] = newToDo
 
-	return newTodo
+	return newToDo
 }
 
-func (r *MapRepository) DeleteByID(id int) bool {
+func (r *MapRepository) deleteByID(id int) bool {
 
 	if _, ok := r.todos[id]; ok {
 		delete(r.todos, id)
